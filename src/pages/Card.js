@@ -1,24 +1,24 @@
 import React, { useState } from 'react'
 import {CardElement, useElements, useStripe} from '@stripe/react-stripe-js'
-import StatusMessages, {useMessages} from '../components/StatusMessages';
 import { SpinnerCircular } from 'spinners-react';
 import FeedbackModal from '../components/Feedback';
 
 const Card = () => {
     const elements = useElements()
     const stripe = useStripe()
-    const [messages, addMessage] = useMessages();
     const [amount, setAmount] = useState();
     const [fullName, setFullName] = useState();
     const [email, setEmail] = useState()
     const [loader, setLoader] = useState(false)
     const [success, setSuccess] = useState(false)
+    const [error, setError] = useState(false)
+    const [message, setMessage] = useState()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoader(true)
         if(!stripe || !elements){
-            addMessage('Stripe.js has not yet loaded.');
+            setMessage('Payment unsuccessful. Try again')
             return;
         }
 
@@ -38,12 +38,12 @@ const Card = () => {
         ).then((r) => r.json());
 
         if (backendError) {
-            addMessage(backendError.message);
             setLoader(false)
+            setError(true)
+            setMessage(backendError.message)
             return;
         }
 
-        addMessage('Client secret returned');
 
 
         const {error: stripeError, paymentIntent} = await stripe.confirmCardPayment(
@@ -61,20 +61,28 @@ const Card = () => {
 
         if (stripeError) {
             // Show error to your customer (e.g., insufficient funds)
-            addMessage(stripeError.message);
+            setMessage(stripeError.message)
             setLoader(false)
+            setError(true)
             return;
         }
 
-        addMessage(`Payment ${paymentIntent.status}: ${paymentIntent.id}`);
+        setMessage(`Payment ${paymentIntent.status}: ${paymentIntent.id}\n Redirecting in 5s...`);
+        // setMessage('Payment Sucessful. Redirecting you to you site....')
         setSuccess(true)
         setLoader(false)
 
     }
 
+
+    function closeModal(data){
+        setError(data)
+    }
+
   return (
     <>    
-   {success && <FeedbackModal/>}
+   {success && <FeedbackModal success={true} error={false} message={message} />}
+   {error && <FeedbackModal success={false} error={true} closeModal={closeModal}  message={message}/>}
     <div className='w-screen h-screen bg-sub-white flex justify-center items-center'>
         <div className='bg-white rounded-lg w-4/5 h-auto xl:w-3/6 xl:auto 2xl:w-2/6 2xl:h-auto p-10'>
             <h2 className='text-5xl font-meduim'>Card</h2>
@@ -87,7 +95,6 @@ const Card = () => {
                 </div>
                 <button disabled={loader || !email || !fullName || !amount || !(elements.getElement(CardElement)) }className='px-8 py-3 bg-green text-white text-xl rounded hover:bg-dark my-5 flex justify-center w-full disabled:bg-sub-green disabled:hover:bg-sub-green'>{loader ? <SpinnerCircular size="30" /> : "Buy Now"}</button>
             </form>
-            <StatusMessages messages={messages} />
         </div>
     </div>
     </>
