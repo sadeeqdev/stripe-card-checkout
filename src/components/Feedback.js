@@ -16,7 +16,7 @@ const FeedbackModal = ({error, success, message, closeModal}) => {
             </div>
             { error &&
             <div className='text-xl font meduim mt-5 flex justify-end'>
-                <button className="text-red text-xl justify-end" onClick={handleClose}> Close</button>
+                <button className="text-red text-xl justify-end hover:text-maroon" onClick={handleClose}> Close</button>
             </div>
             }
             
