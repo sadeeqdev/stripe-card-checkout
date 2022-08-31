@@ -84,7 +84,7 @@ const Card = () => {
    {success && <FeedbackModal success={true} error={false} message={message} />}
    {error && <FeedbackModal success={false} error={true} closeModal={closeModal}  message={message}/>}
     <div className='w-screen h-screen bg-sub-white flex justify-center items-center'>
-        <div className='bg-white rounded-lg w-4/5 h-auto xl:w-3/6 xl:auto 2xl:w-2/6 2xl:h-auto p-10'>
+        <div className='bg-white rounded-lg w-4/5 h-auto xl:w-3/6 xl:auto 2xl:w-1/4 2xl:h-auto p-10'>
             <div className='flex flex-row justify-between'>
                 <h2 className='text-3xl font-meduim'>Checkout</h2>
                 <div className='flex justify between'>
@@ -99,7 +99,7 @@ const Card = () => {
                     <input type="text" className='border border-sub-dark py-4 rounded my-2 w-full px-2' placeholder='Amount' onChange={(e) => setAmount(e.target.value)}/>
                     <CardElement className='border border-sub-dark rounded py-5 px-2 my-2'/>
                 </div>
-                <button disabled={loader || !email || !fullName || !amount || !(elements.getElement(CardElement)) }className='px-8 py-3 bg-green text-white text-xl rounded hover:bg-dark my-5 flex justify-center w-full disabled:bg-sub-green disabled:hover:bg-sub-green'>{loader ? <SpinnerCircular size="30" /> : "Buy Now"}</button>
+                <button disabled={loader || !email || !fullName || !amount || !(elements.getElement(CardElement)) }className='px-8 py-3 bg-green text-white text-xl rounded hover:bg-dark my-5 flex justify-center w-full disabled:bg-sub-green disabled:hover:bg-sub-green'>{loader ? <SpinnerCircular size="30" /> : "Proceed"}</button>
             </form>
         </div>
     </div>
